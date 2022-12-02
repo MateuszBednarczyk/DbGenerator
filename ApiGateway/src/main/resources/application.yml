@@ -1,0 +1,23 @@
+spring:
+  application:
+    name:
+      ApiGateway
+  config:
+    import: optional:configserver:http://localhost:8888/
+cloud:
+  config:
+    token:
+      vault
+    uri:
+      http://localhost:8888/
+server:
+  port:
+    9090
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: false
+
+
+
