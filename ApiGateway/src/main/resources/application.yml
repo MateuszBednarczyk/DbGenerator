@@ -18,6 +18,9 @@ eureka:
   client:
     register-with-eureka: true
     fetch-registry: false
+  instance:
+    appname:
+      ApiGateway
 
 
 
