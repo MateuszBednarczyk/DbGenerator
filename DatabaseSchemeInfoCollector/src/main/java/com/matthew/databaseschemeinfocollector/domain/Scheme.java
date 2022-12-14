@@ -8,6 +8,5 @@ import java.util.List;
 @AllArgsConstructor
 public class Scheme {
     private String name;
-    private List<Entity> entities = new ArrayList<>();
-    private List<Relation> relations = new ArrayList<>();
+    private List<Table> tables = new ArrayList<>();
 }

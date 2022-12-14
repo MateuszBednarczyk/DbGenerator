@@ -4,14 +4,6 @@ spring:
       ms2
   config:
     import: optional:configserver:http://localhost:8888/
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    username: root
-    password:
-    url: jdbc:postgresql://localhost:5432/database_info
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
 cloud:
   config:
     token:
