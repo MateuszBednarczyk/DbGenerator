@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/ms2/table")
+@RequestMapping("api/v1/table")
 @AllArgsConstructor
 public class TableController {
 
