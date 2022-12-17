@@ -4,6 +4,6 @@ import com.matthew.databaseschemeinfocollector.dto.CreateTableDTO;
 
 public interface TableQuery {
 
-    String generateCreateTableQuery(CreateTableDTO dto);
+    String generateCreateTableQuery(final CreateTableDTO dto);
 
 }

@@ -4,8 +4,7 @@ import java.util.Set;
 
 public record CreateTableDTO(
         String name,
-        ColumnDTO primaryKey,
-        Set<String> columns,
+        Set<ColumnDTO> columns,
         Set<ForeignKeyDTO> foreignKeys
 ) {
 }

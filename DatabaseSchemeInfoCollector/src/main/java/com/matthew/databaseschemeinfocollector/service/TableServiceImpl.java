@@ -14,7 +14,7 @@ public class TableServiceImpl implements TableService {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void createTable(CreateTableDTO dto) {
+    public void createTable(final CreateTableDTO dto) {
         jdbcTemplate.execute(tableQuery.generateCreateTableQuery(dto));
     }
 }

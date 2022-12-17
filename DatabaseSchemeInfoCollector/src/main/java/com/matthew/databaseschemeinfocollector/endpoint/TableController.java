@@ -16,7 +16,7 @@ public class TableController {
     private final TableService tableService;
 
     @PostMapping
-    public void createNewTable(@RequestBody CreateTableDTO dto) {
+    public void createNewTable(final @RequestBody CreateTableDTO dto) {
         tableService.createTable(dto);
     }
 
