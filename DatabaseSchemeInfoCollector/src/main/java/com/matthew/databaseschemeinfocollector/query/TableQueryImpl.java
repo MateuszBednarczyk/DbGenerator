@@ -44,9 +44,10 @@ public class TableQueryImpl implements TableQuery {
         query.append(table.getPrimaryKey().getName() + " " + table.getPrimaryKey().getColumnType() + " PRIMARY KEY");
 
         table.getColumns().forEach(column -> {
-            switch (column.getColumnType()){
-                case INT -> query.append("");
-                case VARCHAR -> query.append("");
+            query.append(", " + column.getName());
+            switch (column.getColumnType()) {
+                case INT -> query.append(" INT");
+                case VARCHAR -> query.append(" VARCHAR");
                 default -> throw new RuntimeException("invalid column type");
             }
         });
