@@ -31,7 +31,8 @@ public class TableQueryImpl implements TableQuery {
                     ColumnType.valueOf(foreignKeyDTO.relatedToColumnType()));
             Column relatedTo = new Column(foreignKeyDTO.relatedTo().name(),
                     ColumnType.valueOf(foreignKeyDTO.sourceColumnType()));
-            foreignKeys.add(new ForeignKey(source, relatedTo));
+            foreignKeys.add(new ForeignKey(foreignKeyDTO.foreignKeyName(), source, foreignKeyDTO.sourceTableName(),
+                    relatedTo, foreignKeyDTO.relatedToTableName()));
         });
 
         Table table = new Table(dto.name(), columns, foreignKeys);
@@ -50,6 +51,12 @@ public class TableQueryImpl implements TableQuery {
                 case VARCHAR -> query.append(" VARCHAR");
                 default -> throw new RuntimeException("invalid column type");
             }
+        });
+
+        table.getForeignKeys().forEach(foreignKey -> {
+            query.append(", CONSTRAINT " + foreignKey.getForeignKeyName() +
+                    " FOREIGN KEY (" + foreignKey.getSource().getName() + ") REFERENCES " +
+                    foreignKey.getRelatedToTableName() + " (" + foreignKey.getRelatedTo().getName() + ")");
         });
         query.append(");");
 
