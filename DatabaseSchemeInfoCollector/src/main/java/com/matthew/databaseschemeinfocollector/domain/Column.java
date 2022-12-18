@@ -1,8 +1,10 @@
 package com.matthew.databaseschemeinfocollector.domain;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 public class Column {
 
     @NotBlank
@@ -14,6 +16,7 @@ public class Column {
     private final ColumnType columnType;
 
     @NotBlank
+    @Getter
     private Integer size;
 
     public Column(String name, ColumnType columnType) {

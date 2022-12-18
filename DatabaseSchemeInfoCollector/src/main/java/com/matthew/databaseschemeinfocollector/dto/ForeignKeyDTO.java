@@ -5,8 +5,10 @@ public record ForeignKeyDTO(
         ColumnDTO source,
         String sourceColumnType,
         String sourceTableName,
+        Integer sourceColumnLength,
         ColumnDTO relatedTo,
         String relatedToColumnType,
-        String relatedToTableName
+        String relatedToTableName,
+        Integer relatedToColumnSize
 ) {
 }

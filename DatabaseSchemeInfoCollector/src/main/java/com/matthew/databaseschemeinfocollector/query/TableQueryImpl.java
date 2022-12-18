@@ -23,14 +23,14 @@ public class TableQueryImpl implements TableQuery {
         Set<ForeignKey> foreignKeys = new HashSet<>();
 
         dto.columns().forEach(columnDTO -> {
-            columns.add(new Column(columnDTO.name(), ColumnType.valueOf(columnDTO.columnType())));
+            columns.add(new Column(columnDTO.name(), ColumnType.valueOf(columnDTO.columnType()), columnDTO.size()));
         });
 
         dto.foreignKeys().forEach(foreignKeyDTO -> {
             Column source = new Column(foreignKeyDTO.source().name(),
-                    ColumnType.valueOf(foreignKeyDTO.relatedToColumnType()));
+                    ColumnType.valueOf(foreignKeyDTO.relatedToColumnType()), foreignKeyDTO.sourceColumnLength());
             Column relatedTo = new Column(foreignKeyDTO.relatedTo().name(),
-                    ColumnType.valueOf(foreignKeyDTO.sourceColumnType()));
+                    ColumnType.valueOf(foreignKeyDTO.sourceColumnType()), foreignKeyDTO.relatedToColumnSize());
             foreignKeys.add(new ForeignKey(foreignKeyDTO.foreignKeyName(), source, foreignKeyDTO.sourceTableName(),
                     relatedTo, foreignKeyDTO.relatedToTableName()));
         });
@@ -48,7 +48,7 @@ public class TableQueryImpl implements TableQuery {
             query.append(", " + column.getName());
             switch (column.getColumnType()) {
                 case INT -> query.append(" INT");
-                case VARCHAR -> query.append(" VARCHAR");
+                case VARCHAR -> query.append(" VARCHAR (" + column.getSize() + ")");
                 default -> throw new RuntimeException("invalid column type");
             }
         });
