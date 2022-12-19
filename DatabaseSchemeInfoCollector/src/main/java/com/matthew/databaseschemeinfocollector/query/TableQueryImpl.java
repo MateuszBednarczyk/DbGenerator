@@ -72,7 +72,18 @@ public class TableQueryImpl implements TableQuery {
 
     private void generateForeignKeysQuery(StringBuilder query, Table table) {
         table.getForeignKeys().forEach(foreignKey -> {
-            query.append("ALTER TABLE ").append(table.getName()).append(" ADD CONSTRAINT ").append(foreignKey.getForeignKeyName()).append(" FOREIGN KEY (").append(foreignKey.getSource().getName()).append(") REFERENCES ").append(foreignKey.getRelatedToTableName()).append(" (").append(foreignKey.getRelatedTo().getName()).append(")");
+            query
+                    .append("ALTER TABLE ")
+                    .append(table.getName())
+                    .append(" ADD CONSTRAINT ")
+                    .append(foreignKey.getForeignKeyName())
+                    .append(" FOREIGN KEY (")
+                    .append(foreignKey.getSource().getName())
+                    .append(") REFERENCES ")
+                    .append(foreignKey.getRelatedToTableName())
+                    .append(" (")
+                    .append(foreignKey.getRelatedTo().getName())
+                    .append(")");
         });
     }
 
