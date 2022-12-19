@@ -5,13 +5,17 @@ import com.matthew.databaseschemeinfocollector.domain.ColumnType;
 import com.matthew.databaseschemeinfocollector.domain.ForeignKey;
 import com.matthew.databaseschemeinfocollector.domain.Table;
 import com.matthew.databaseschemeinfocollector.dto.CreateTableDTO;
+import com.matthew.databaseschemeinfocollector.exception.CustomException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.matthew.databaseschemeinfocollector.exception.CustomExceptionMessage.INVALID_COLUMN_TYPE;
 
 @Component
 @AllArgsConstructor
@@ -43,7 +47,7 @@ public class TableQueryImpl implements TableQuery {
             switch (column.getColumnType()) {
                 case INT -> query.append(" INT");
                 case VARCHAR -> query.append(" VARCHAR (" + column.getSize() + ")");
-                default -> throw new RuntimeException("invalid column type");
+                default -> throw new CustomException(HttpStatus.BAD_REQUEST, INVALID_COLUMN_TYPE);
             }
         });
         return query.toString();
