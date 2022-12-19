@@ -46,6 +46,7 @@ public class TableQueryImpl implements TableQuery {
             query.append(", " + column.getName());
             switch (column.getColumnType()) {
                 case INT -> query.append(" INT");
+                case UUID -> query.append(" UUID");
                 case VARCHAR -> query.append(" VARCHAR (" + column.getSize() + ")");
                 default -> throw new CustomException(HttpStatus.BAD_REQUEST, INVALID_COLUMN_TYPE);
             }
