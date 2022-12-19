@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class TableServiceImpl implements TableService {
@@ -14,7 +16,7 @@ public class TableServiceImpl implements TableService {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void createTable(final CreateTableDTO dto) {
-        jdbcTemplate.execute(tableQuery.generateCreateTableQuery(dto));
+    public void createTable(final List<CreateTableDTO> dtos) {
+        jdbcTemplate.execute(tableQuery.generateCreateTableQuery(dtos));
     }
 }

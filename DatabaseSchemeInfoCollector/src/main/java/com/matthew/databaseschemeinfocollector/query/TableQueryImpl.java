@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -18,49 +19,51 @@ import java.util.Set;
 public class TableQueryImpl implements TableQuery {
 
     @Override
-    public String generateCreateTableQuery(final CreateTableDTO dto) {
-        Set<Column> columns = new HashSet<>();
-        Set<ForeignKey> foreignKeys = new HashSet<>();
+    public String generateCreateTableQuery(final List<CreateTableDTO> dtos) {
+        StringBuilder query = new StringBuilder();
+        dtos.forEach(tableDTO -> {
+            Set<Column> columns = new HashSet<>();
+            Set<ForeignKey> foreignKeys = new HashSet<>();
 
-        dto.columns().forEach(columnDTO -> {
-            columns.add(new Column(columnDTO.name(), ColumnType.valueOf(columnDTO.columnType()), columnDTO.size()));
+            tableDTO.columns().forEach(columnDTO -> {
+                columns.add(new Column(columnDTO.name(), ColumnType.valueOf(columnDTO.columnType()), columnDTO.size()));
+            });
+
+            tableDTO.foreignKeys().forEach(foreignKeyDTO -> {
+                Column source = new Column(foreignKeyDTO.source().name(),
+                        ColumnType.valueOf(foreignKeyDTO.relatedToColumnType()), foreignKeyDTO.sourceColumnLength());
+                Column relatedTo = new Column(foreignKeyDTO.relatedTo().name(),
+                        ColumnType.valueOf(foreignKeyDTO.sourceColumnType()), foreignKeyDTO.relatedToColumnSize());
+                foreignKeys.add(new ForeignKey(foreignKeyDTO.foreignKeyName(), source, foreignKeyDTO.sourceTableName(),
+                        relatedTo, foreignKeyDTO.relatedToTableName()));
+            });
+
+            Table table = new Table(tableDTO.name(), columns, foreignKeys);
+
+            query.append("CREATE TABLE ");
+            query.append("\"");
+            query.append(table.getName());
+            query.append("\" ");
+            query.append("(");
+            query.append(table.getPrimaryKey().getName() + " " + table.getPrimaryKey().getColumnType() + " PRIMARY KEY");
+
+            table.getColumns().forEach(column -> {
+                query.append(", " + column.getName());
+                switch (column.getColumnType()) {
+                    case INT -> query.append(" INT");
+                    case VARCHAR -> query.append(" VARCHAR (" + column.getSize() + ")");
+                    default -> throw new RuntimeException("invalid column type");
+                }
+            });
+            query.append("); ");
+
+            table.getForeignKeys().forEach(foreignKey -> {
+                query.append("ALTER TABLE " + table.getName() + " ADD CONSTRAINT " + foreignKey.getForeignKeyName() +
+                        " FOREIGN KEY (" + foreignKey.getSource().getName() + ") REFERENCES " +
+                        foreignKey.getRelatedToTableName() + " (" + foreignKey.getRelatedTo().getName() + ")");
+            });
+            log.info(query.toString());
         });
-
-        dto.foreignKeys().forEach(foreignKeyDTO -> {
-            Column source = new Column(foreignKeyDTO.source().name(),
-                    ColumnType.valueOf(foreignKeyDTO.relatedToColumnType()), foreignKeyDTO.sourceColumnLength());
-            Column relatedTo = new Column(foreignKeyDTO.relatedTo().name(),
-                    ColumnType.valueOf(foreignKeyDTO.sourceColumnType()), foreignKeyDTO.relatedToColumnSize());
-            foreignKeys.add(new ForeignKey(foreignKeyDTO.foreignKeyName(), source, foreignKeyDTO.sourceTableName(),
-                    relatedTo, foreignKeyDTO.relatedToTableName()));
-        });
-
-        Table table = new Table(dto.name(), columns, foreignKeys);
-
-        StringBuilder query = new StringBuilder("CREATE TABLE ");
-        query.append("\"");
-        query.append(table.getName());
-        query.append("\" ");
-        query.append("(");
-        query.append(table.getPrimaryKey().getName() + " " + table.getPrimaryKey().getColumnType() + " PRIMARY KEY");
-
-        table.getColumns().forEach(column -> {
-            query.append(", " + column.getName());
-            switch (column.getColumnType()) {
-                case INT -> query.append(" INT");
-                case VARCHAR -> query.append(" VARCHAR (" + column.getSize() + ")");
-                default -> throw new RuntimeException("invalid column type");
-            }
-        });
-
-        table.getForeignKeys().forEach(foreignKey -> {
-            query.append(", CONSTRAINT " + foreignKey.getForeignKeyName() +
-                    " FOREIGN KEY (" + foreignKey.getSource().getName() + ") REFERENCES " +
-                    foreignKey.getRelatedToTableName() + " (" + foreignKey.getRelatedTo().getName() + ")");
-        });
-        query.append(");");
-
-        log.info(query.toString());
         return query.toString();
     }
 

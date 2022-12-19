@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/table")
 @AllArgsConstructor
@@ -16,8 +18,8 @@ public class TableController {
     private final TableService tableService;
 
     @PostMapping
-    public void createNewTable(final @RequestBody CreateTableDTO dto) {
-        tableService.createTable(dto);
+    public void createNewTable(final @RequestBody List<CreateTableDTO> dtos) {
+        tableService.createTable(dtos);
     }
 
 }
