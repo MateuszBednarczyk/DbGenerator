@@ -28,7 +28,14 @@ public class TableQueryImpl implements TableQuery {
         dtos.forEach(tableDTO -> {
             Set<Column> columns = getColumnsFromDTO(tableDTO);
             Set<ForeignKey> foreignKeys = getForeignKeysFromDTO(tableDTO);
-            Table table = new Table(tableDTO.name(), columns, foreignKeys);
+            Column primaryKey = new Column("ID", getColumnTypeForPrimaryKey(tableDTO.primaryKeyColumnType()));
+
+            Table table = new Table.Builder()
+                    .name(tableDTO.name())
+                    .primaryKey(primaryKey)
+                    .columns(columns)
+                    .foreignKeys(foreignKeys)
+                    .build();
 
             query.append(generateCreateTableQueryPart(table));
             query.append(generateColumnsQueryPart(table));
@@ -52,6 +59,18 @@ public class TableQueryImpl implements TableQuery {
             }
         });
         return query.toString();
+    }
+
+    private ColumnType getColumnTypeForPrimaryKey(String stringValueOfType) {
+        switch (stringValueOfType) {
+            case "UUID" -> {
+                return ColumnType.UUID;
+            }
+            case "ID" -> {
+                return ColumnType.INT;
+            }
+        }
+        throw new CustomException(HttpStatus.BAD_REQUEST, INVALID_COLUMN_TYPE);
     }
 
     private Set<Column> getColumnsFromDTO(CreateTableDTO tableDTO) {

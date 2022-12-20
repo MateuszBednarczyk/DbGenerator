@@ -11,11 +11,11 @@ public class Table {
 
     @NotBlank
     @Getter
-    private final String name;
+    private String name;
 
     @NotBlank
     @Getter
-    private final Column primaryKey;
+    private Column primaryKey;
 
     @NotBlank
     @Getter
@@ -25,10 +25,40 @@ public class Table {
     @Getter
     private Set<ForeignKey> foreignKeys = new HashSet<>();
 
-    public Table(String name, Set<Column> columns, Set<ForeignKey> foreignKeys) {
-        this.name = name;
-        this.primaryKey = new Column("ID", ColumnType.INT);
-        this.columns = columns;
-        this.foreignKeys = foreignKeys;
+    public static final class Builder {
+
+        private String name;
+        private Column primaryKey;
+        private Set<Column> columns = new HashSet<>();
+        private Set<ForeignKey> foreignKeys = new HashSet<>();
+
+        public Builder name(String name){
+            this.name = name;
+            return this;
+        }
+
+        public Builder primaryKey(Column primaryKey){
+            this.primaryKey = primaryKey;
+            return this;
+        }
+
+        public Builder columns(Set<Column> columns){
+            this.columns = columns;
+            return this;
+        }
+
+        public Builder foreignKeys(Set<ForeignKey> foreignKeys){
+            this.foreignKeys = foreignKeys;
+            return this;
+        }
+
+        public Table build (){
+            Table table = new Table();
+            table.name = this.name;
+            table.primaryKey = this.primaryKey;
+            table.columns = this.columns;
+            table.foreignKeys = this.foreignKeys;
+            return table;
+        }
     }
 }
