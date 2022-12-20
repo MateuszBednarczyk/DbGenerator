@@ -28,7 +28,11 @@ public class TableQueryImpl implements TableQuery {
         dtos.forEach(tableDTO -> {
             Set<Column> columns = getColumnsFromDTO(tableDTO);
             Set<ForeignKey> foreignKeys = getForeignKeysFromDTO(tableDTO);
-            Column primaryKey = new Column("ID", getColumnTypeForPrimaryKey(tableDTO.primaryKeyColumnType()));
+
+            Column primaryKey = Column.builder()
+                    .name("ID")
+                    .columnType(getColumnTypeForPrimaryKey(tableDTO.primaryKeyColumnType()))
+                    .build();
 
             Table table = new Table.Builder()
                     .name(tableDTO.name())
@@ -76,7 +80,11 @@ public class TableQueryImpl implements TableQuery {
     private Set<Column> getColumnsFromDTO(CreateTableDTO tableDTO) {
         Set<Column> columns = new HashSet<>();
         tableDTO.columns().forEach(columnDTO -> {
-            columns.add(new Column(columnDTO.name(), ColumnType.valueOf(columnDTO.columnType()), columnDTO.size()));
+            columns.add(Column.builder()
+                    .name(columnDTO.name())
+                    .columnType(ColumnType.valueOf(columnDTO.columnType()))
+                    .size(columnDTO.size())
+                    .build());
         });
         return columns;
     }
