@@ -2,10 +2,11 @@ package com.matthew.databaseschemeinfocollector.domain;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@Builder
 public class ForeignKey {
 
     @NotBlank

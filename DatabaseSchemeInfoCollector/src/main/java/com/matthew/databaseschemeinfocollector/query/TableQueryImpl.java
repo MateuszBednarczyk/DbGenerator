@@ -70,7 +70,7 @@ public class TableQueryImpl implements TableQuery {
             case "UUID" -> {
                 return ColumnType.UUID;
             }
-            case "ID" -> {
+            case "INT" -> {
                 return ColumnType.INT;
             }
         }
@@ -92,12 +92,25 @@ public class TableQueryImpl implements TableQuery {
     private Set<ForeignKey> getForeignKeysFromDTO(CreateTableDTO tableDTO) {
         Set<ForeignKey> foreignKeys = new HashSet<>();
         tableDTO.foreignKeys().forEach(foreignKeyDTO -> {
-            Column source = new Column(foreignKeyDTO.source().name(),
-                    ColumnType.valueOf(foreignKeyDTO.relatedToColumnType()), foreignKeyDTO.sourceColumnLength());
-            Column relatedTo = new Column(foreignKeyDTO.relatedTo().name(),
-                    ColumnType.valueOf(foreignKeyDTO.sourceColumnType()), foreignKeyDTO.relatedToColumnSize());
-            foreignKeys.add(new ForeignKey(foreignKeyDTO.foreignKeyName(), source, foreignKeyDTO.sourceTableName(),
-                    relatedTo, foreignKeyDTO.relatedToTableName()));
+            Column source = Column.builder()
+                    .name(foreignKeyDTO.source().name())
+                    .columnType(ColumnType.valueOf(foreignKeyDTO.relatedToColumnType()))
+                    .size(foreignKeyDTO.sourceColumnLength())
+                    .build();
+
+            Column relatedTo = Column.builder()
+                    .name(foreignKeyDTO.relatedTo().name())
+                    .columnType(ColumnType.valueOf(foreignKeyDTO.relatedToColumnType()))
+                    .size(foreignKeyDTO.relatedToColumnSize())
+                    .build();
+
+            foreignKeys.add(ForeignKey.builder()
+                    .foreignKeyName(foreignKeyDTO.foreignKeyName())
+                    .source(source)
+                    .sourceTableName(foreignKeyDTO.sourceTableName())
+                    .relatedTo(relatedTo)
+                    .relatedToTableName(foreignKeyDTO.relatedToTableName())
+                    .build());
         });
         return foreignKeys;
     }
